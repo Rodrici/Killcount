@@ -1,16 +1,27 @@
 import pandas as pd
+import csv
 
 
 def add_kills(gamename, num_add):
+    with open('Killcounter.csv') as archivo:
+        reader_arch = csv.reader(archivo)
+        for lineas in reader_arch:
+            if (lineas[0]==gamename):
+                Kills = int(lineas[1])
+                Kills = int(Kills+num_add)
     df = pd.read_csv('Killcounter.csv')
-    Kills = df[(df['GAME'] == gamename)]
-    print(Kills.head())
-    return 
-
+    df.loc[df["GAME"]==gamename, "KILLS"] = Kills
+    df.to_csv("Killcounter.csv", index=False)
+    return
+        
+        
 def show_game_kills(gamename):
     df = pd.read_csv('Killcounter.csv')
     Kills = df[(df['GAME'] == gamename)]
-    print(Kills.head())    
+    try:
+        print(Kills.head())    
+    except KeyError:
+        pass
     return 
 
 
@@ -28,6 +39,8 @@ def main():
     if (Quedesea==1):
         Game = str(input("Ingrese juego: "))
         Game = Game.upper()
+        ADDKILLS = int(input("Cuantas kills para añadir: "))
+        add_kills(Game, ADDKILLS)
         main()
     if (Quedesea==2):
         Game = str(input("Ingrese juego: "))
